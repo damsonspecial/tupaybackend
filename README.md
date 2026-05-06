@@ -30,7 +30,7 @@ A production-grade, secure, and high-performance backend for cross-border remitt
 ## Webhook Security (Handshake)
 Incoming settlement webhooks from third-party payment providers must include an `X-Signature` header.
 - **Algorithm**: HMAC-SHA256
-- **Secret**: Defined in `config/services.php` (settlement.secret)
+- **Secret**: Defined as `SETTLEMENT_WEBHOOK_SECRET` in `.env` (mapped via `config/services.php`).
 - **Payload**: The raw JSON body of the request.
 
 **Example (PHP)**:
@@ -41,9 +41,17 @@ $signature = hash_hmac('sha256', $payload, $secret);
 ```
 
 ## API Setup
-1. Run `composer install`
-2. Run `php artisan migrate --seed`
-3. Refer to the `tupay_api_collection.json` for Postman/Insomnia documentation.
+1. **Initialize Environment**:
+   ```bash
+   cp .env.example .env
+   php artisan key:generate
+   ```
+2. **Configure Keys**: Open `.env` and set your `SETTLEMENT_WEBHOOK_SECRET`.
+3. **Install Dependencies**: `composer install`
+4. **Database Setup**: `php artisan migrate --seed`
+5. **Documentation**: Refer to the `tupay_api_collection.json` for Postman/Insomnia documentation.
+
+**Pro-tip**: You can also use `composer setup` to automate the basic initialization.
 
 **Test User**: `test@example.com` / `password`
 *Note: The 2FA secret is dynamically generated during seeding for maximum security.*
